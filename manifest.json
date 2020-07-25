@@ -1,0 +1,19 @@
+{
+	"name": "Chroplus",
+	"manifest_version": 2,
+	"version": "1.0",
+	"description": "plus and substract for more peace and quite",
+	"browser_action": {
+		"default_icon":"icon.png",
+		"default_popup":"popup.html"
+	},
+	"background": {
+		"scripts": ["background.js"]
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://www.baidu.com/*","http://blog.sina.com.cn/u/6274555375"],
+			"js":["chroplus.js"]
+		}
+	]
+}
