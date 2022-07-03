@@ -14,6 +14,10 @@ function refreshSina() {
 function clearBaiDuAdvertisement() {
     var h = document.getElementsByClassName('cr-content');
     if (h.length > 0) {
+        if (h[0]['style']['display'] === 'none') {
+          return;
+        }
+        console.log("loop begin")
         for(let i =0; i< h.length; i++ ) {
             h[i]['style']['display'] = 'none';
         }
