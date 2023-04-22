@@ -1,15 +1,8 @@
 {
 	"name": "Chroplus",
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"version": "1.0",
 	"description": "plus and substract for more peace and quite",
-	"browser_action": {
-		"default_icon":"icon.png",
-		"default_popup":"popup.html"
-	},
-	"background": {
-		"scripts": ["background.js"]
-	},
 	"content_scripts": [
 		{
 			"matches": ["http://acm.hdu.edu.cn/*"],
