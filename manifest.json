@@ -12,8 +12,20 @@
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://www.baidu.com/*","http://blog.sina.com.cn/u/6274555375"],
+			"matches": ["http://acm.hdu.edu.cn/*"],
 			"js":["chroplus.js"]
+		},
+		{
+			"matches": ["https://www.baidu.com/*"],
+			"js":["baidu.js"]
+		},
+		{
+			"matches": ["https://www.jianshu.com/*"],
+			"js":["jianshu.js"]
+		},
+		{
+			"matches": ["http://blog.sina.com.cn/u/6274555375"],
+			"js":["sinablog.js"]
 		}
 	]
 }
