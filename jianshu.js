@@ -2,7 +2,6 @@
  * 该插件目的：
  *   去除 简书 右侧栏的广告
  */
-
 window.onload = function(){
     console.log('插件进入')
 
