@@ -61,8 +61,14 @@ async function loadFromStorage() {
     const data = await chrome.storage.local.get(['apiKey', 'messages', 'agentMode']);
     apiKey = data.apiKey || '';
     messages = data.messages || [];
-    // agentMode 默认 true，除非用户明确设置为 false
-    agentMode = data.agentMode !== false;
+    // agentMode 默认 true，强制启用 Agent 模式
+    agentMode = true;
+    
+    // 如果 storage 中没有 agentMode 或值为 false，更新 storage
+    if (data.agentMode !== true) {
+        await chrome.storage.local.set({ agentMode: true });
+        console.log('[Storage] agentMode set to true');
+    }
 }
 
 /**
@@ -295,6 +301,7 @@ async function handleAgentResponse(data) {
             if (part.functionCall) {
                 functionCallFound = true;
                 const functionCall = part.functionCall;
+                const thoughtSignature = part.thoughtSignature; // 获取 thoughtSignature
                 
                 // 显示函数调用
                 const toolCallMsg = {
@@ -306,6 +313,7 @@ async function handleAgentResponse(data) {
                 appendMessageElement(toolCallMsg);
                 
                 console.log('[Agent] Function call:', functionCall);
+                console.log('[Agent] Thought signature:', thoughtSignature);
                 
                 // 执行工具
                 const toolResult = await executeTool(functionCall.name, functionCall.args);
@@ -325,20 +333,30 @@ async function handleAgentResponse(data) {
                 const geminiMessages = buildGeminiMessages();
                 
                 // 添加 functionCall 消息（模型发起）
+                const modelPart = { functionCall: functionCall };
+                // 如果有 thoughtSignature，需要包含它
+                if (thoughtSignature) {
+                    modelPart.thoughtSignature = thoughtSignature;
+                }
                 geminiMessages.push({
                     role: 'model',
-                    parts: [{ functionCall: functionCall }]
+                    parts: [modelPart]
                 });
                 
                 // 添加 functionResponse 消息（用户返回结果）
+                const userPart = {
+                    functionResponse: {
+                        name: functionCall.name,
+                        response: toolResult
+                    }
+                };
+                // thoughtSignature 放在 part 层级，不是 functionResponse 里面
+                if (thoughtSignature) {
+                    userPart.thoughtSignature = thoughtSignature;
+                }
                 geminiMessages.push({
                     role: 'user',
-                    parts: [{
-                        functionResponse: {
-                            name: functionCall.name,
-                            response: toolResult
-                        }
-                    }]
+                    parts: [userPart]
                 });
                 
                 // 继续发送请求给 Gemini
